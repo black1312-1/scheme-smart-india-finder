@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { GraduationCap, User, MapPin, IndianRupee } from "lucide-react";
+import { GraduationCap, User, MapPin, IndianRupee, Phone } from "lucide-react";
 
 const STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa", "Gujarat", 
@@ -31,13 +31,17 @@ const INSTITUTIONS = ["Government", "Private", "Not enrolled"];
 const Onboarding = () => {
   const [formData, setFormData] = useState({
     fullName: "",
+    age: "",
     classLevel: "",
     gender: "",
+    mobileNumber: "",
     familyIncome: "",
     category: "",
     state: "",
     institution: "",
-    needBasedSupport: false
+    needBasedSupport: false,
+    disabilityStatus: "",
+    ruralArea: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -53,7 +57,7 @@ const Onboarding = () => {
 
     // Validation
     if (!formData.classLevel || !formData.gender || !formData.familyIncome || 
-        !formData.category || !formData.state || !formData.institution) {
+        !formData.category || !formData.state || !formData.institution || !formData.ruralArea) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -115,18 +119,31 @@ const Onboarding = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="classLevel">Class/Education Level *</Label>
-                    <Select value={formData.classLevel} onValueChange={(value) => handleChange("classLevel", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your class/level" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CLASS_LEVELS.map((level) => (
-                          <SelectItem key={level} value={level}>{level}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="age">Age (Years)</Label>
+                    <Input
+                      id="age"
+                      type="number"
+                      placeholder="Enter your age"
+                      value={formData.age}
+                      onChange={(e) => handleChange("age", e.target.value)}
+                      min="5"
+                      max="100"
+                    />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="classLevel">Educational Class Level *</Label>
+                  <Select value={formData.classLevel} onValueChange={(value) => handleChange("classLevel", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your class/level" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {CLASS_LEVELS.map((level) => (
+                        <SelectItem key={level} value={level}>{level}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -136,7 +153,7 @@ const Onboarding = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-background border z-50">
                         <SelectItem value="Male">Male</SelectItem>
                         <SelectItem value="Female">Female</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
@@ -145,18 +162,35 @@ const Onboarding = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="familyIncome">Family Income *</Label>
-                    <Select value={formData.familyIncome} onValueChange={(value) => handleChange("familyIncome", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select income range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {INCOME_RANGES.map((income) => (
-                          <SelectItem key={income} value={income}>{income}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="mobileNumber">Mobile Number</Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="mobileNumber"
+                        type="tel"
+                        placeholder="Enter mobile number"
+                        value={formData.mobileNumber}
+                        onChange={(e) => handleChange("mobileNumber", e.target.value)}
+                        className="pl-10"
+                        pattern="[0-9]{10}"
+                        maxLength={10}
+                      />
+                    </div>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="familyIncome">Family Annual Income *</Label>
+                  <Select value={formData.familyIncome} onValueChange={(value) => handleChange("familyIncome", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select income range" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-background border z-50">
+                      {INCOME_RANGES.map((income) => (
+                        <SelectItem key={income} value={income}>{income}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -166,7 +200,7 @@ const Onboarding = () => {
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-background border z-50">
                         {CATEGORIES.map((category) => (
                           <SelectItem key={category} value={category}>{category}</SelectItem>
                         ))}
@@ -175,12 +209,12 @@ const Onboarding = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="state">State *</Label>
+                    <Label htmlFor="state">Residential State *</Label>
                     <Select value={formData.state} onValueChange={(value) => handleChange("state", value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select your state" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-background border z-50">
                         {STATES.map((state) => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
                         ))}
@@ -190,17 +224,50 @@ const Onboarding = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="institution">Type of Institution *</Label>
+                  <Label htmlFor="institution">Institution Type *</Label>
                   <Select value={formData.institution} onValueChange={(value) => handleChange("institution", value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select institution type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background border z-50">
                       {INSTITUTIONS.map((institution) => (
                         <SelectItem key={institution} value={institution}>{institution}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="disabilityStatus">Disability Status (Optional)</Label>
+                    <Select value={formData.disabilityStatus} onValueChange={(value) => handleChange("disabilityStatus", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select if applicable" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border z-50">
+                        <SelectItem value="None">None</SelectItem>
+                        <SelectItem value="Physical">Physical Disability</SelectItem>
+                        <SelectItem value="Visual">Visual Impairment</SelectItem>
+                        <SelectItem value="Hearing">Hearing Impairment</SelectItem>
+                        <SelectItem value="Intellectual">Intellectual Disability</SelectItem>
+                        <SelectItem value="Multiple">Multiple Disabilities</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ruralArea">Are you from a Rural Area? *</Label>
+                    <Select value={formData.ruralArea} onValueChange={(value) => handleChange("ruralArea", value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select area type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border z-50">
+                        <SelectItem value="Yes">Yes - Rural Area</SelectItem>
+                        <SelectItem value="No">No - Urban Area</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -210,7 +277,7 @@ const Onboarding = () => {
                     onCheckedChange={(checked) => handleChange("needBasedSupport", checked as boolean)}
                   />
                   <Label htmlFor="needBasedSupport" className="text-sm">
-                    I need financial assistance/support
+                    Need-based Support Preference (I need extra financial assistance/support)
                   </Label>
                 </div>
                 
