@@ -46,7 +46,7 @@ const Login = () => {
         title: "Success",
         description: "Login successful!",
       });
-      navigate("/dashboard");
+      navigate("/home");
     } else {
       toast({
         title: "Error",
